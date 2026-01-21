@@ -7,7 +7,7 @@ export function Home() {
     <>
       <View style={styles.container}>
         <Image style={styles.logo} source={require("@/assets/logo.png")} />
-        <Button />
+        <Button title="Entrar" />
       </View>
     </>
   );
