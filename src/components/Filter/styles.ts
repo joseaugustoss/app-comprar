@@ -10,4 +10,9 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 600,
   },
+  header: {
+    width: "100%",
+    flexDirection: "row",
+    gap: 12,
+  },
 });
