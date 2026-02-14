@@ -6,7 +6,7 @@ import {
   FlatList,
   Alert,
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { styles } from "./styles";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
@@ -32,6 +32,9 @@ export function Home() {
     };
     setItem((prevItens) => [...prevItens, newItem]);
   }
+  useEffect(() => {
+    console.log("useEffect");
+  }, [filter]);
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={require("@/assets/logo.png")} />
