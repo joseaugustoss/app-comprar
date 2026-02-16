@@ -13,13 +13,14 @@ import { Input } from "@/components/Input";
 import { Filter } from "@/components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
 import { Item } from "@/components/Item";
+import { itemsStorage, ItemStorage } from "@/storage/itemsStorage";
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE];
 
 export function Home() {
   const [filter, setFilter] = useState<FilterStatus>(FilterStatus.PENDING);
   const [description, setDescription] = useState("");
-  const [item, setItem] = useState<any>([]);
+  const [item, setItem] = useState<ItemStorage[]>([]);
 
   function handleAdd() {
     if (!description.trim()) {
@@ -30,11 +31,20 @@ export function Home() {
       description: description,
       status: FilterStatus.PENDING,
     };
-    setItem((prevItens) => [...prevItens, newItem]);
+  }
+  async function getItems() {
+    try {
+      const response = await itemsStorage.get();
+      setItem(response);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Erro", "Não foi possível filtrar os itens.");
+    }
   }
   useEffect(() => {
-    console.log("useEffect");
-  }, [filter]);
+    getItems();
+  }, []);
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={require("@/assets/logo.png")} />
