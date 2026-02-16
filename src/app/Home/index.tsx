@@ -14,6 +14,7 @@ import { Filter } from "@/components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
 import { Item } from "@/components/Item";
 import { itemsStorage, ItemStorage } from "@/storage/itemsStorage";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE];
 
@@ -22,7 +23,7 @@ export function Home() {
   const [description, setDescription] = useState("");
   const [item, setItem] = useState<ItemStorage[]>([]);
 
-  function handleAdd() {
+  async function handleAdd() {
     if (!description.trim()) {
       return Alert.alert("Adicionar", "Informe a descrição do item.");
     }
@@ -31,20 +32,21 @@ export function Home() {
       description: description,
       status: FilterStatus.PENDING,
     };
+    await itemsStorage.add(newItem);
+    await itemsByStatus();
   }
-  async function getItems() {
+  async function itemsByStatus() {
     try {
-      const response = await itemsStorage.get();
+      const response = await itemsStorage.getByStatus(filter);
       setItem(response);
-      console.log(response);
     } catch (error) {
       console.log(error);
       Alert.alert("Erro", "Não foi possível filtrar os itens.");
     }
   }
   useEffect(() => {
-    getItems();
-  }, []);
+    itemsByStatus();
+  }, [filter]);
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={require("@/assets/logo.png")} />
