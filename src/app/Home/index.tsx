@@ -48,6 +48,15 @@ export function Home() {
       Alert.alert("Erro", "Não foi possível filtrar os itens.");
     }
   }
+  async function handleRemove(id: string) {
+    try {
+      await itemsStorage.remove(id);
+      await itemsByStatus();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Remover", "Não foi possível remover o item.");
+    }
+  }
   useEffect(() => {
     itemsByStatus();
   }, [filter]);
@@ -87,7 +96,7 @@ export function Home() {
                 description: item.description,
               }}
               onRemove={() => {
-                console.log("remove");
+                handleRemove(item.id);
               }}
               onStatus={() => {
                 console.log("mudar o status");
