@@ -12,7 +12,8 @@ export type ItemStorage = {
 async function get(): Promise<ItemStorage[]> {
   try {
     const storage = await AsyncStorage.getItem(ITEM_STORAGE_KEY);
-    return storage ? JSON.parse(storage) : [];
+    const items = storage ? JSON.parse(storage) : [];
+    return Array.isArray(items) ? items.filter((item) => item != null) : [];
   } catch (error) {
     throw new Error("ITEMS_GET: " + error);
   }
@@ -50,10 +51,26 @@ async function clear(): Promise<void> {
     throw new Error("ITEMS_CLEAR: " + error);
   }
 }
+async function toggleStatus(id: string): Promise<void> {
+  const items = await get();
+  const updateItems = items.map((item) =>
+    item.id === id
+      ? {
+          ...item,
+          status:
+            item.status === FilterStatus.PENDING
+              ? FilterStatus.DONE
+              : FilterStatus.PENDING,
+        }
+      : item,
+  );
+  await save(updateItems);
+}
 export const itemsStorage = {
   get,
   getByStatus,
   add,
   remove,
   clear,
+  toggleStatus,
 };

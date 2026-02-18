@@ -14,7 +14,6 @@ import { Filter } from "@/components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
 import { Item } from "@/components/Item";
 import { itemsStorage, ItemStorage } from "@/storage/itemsStorage";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE];
 
@@ -72,6 +71,15 @@ export function Home() {
       Alert.alert("Limpar", "Não foi possível limpar os itens.");
     }
   }
+  async function handleToggleStatus(id: string) {
+    try {
+      await itemsStorage.toggleStatus(id);
+      await itemsByStatus();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Erro", "Não foi possível alterar o status do item.");
+    }
+  }
   useEffect(() => {
     itemsByStatus();
   }, [filter]);
@@ -114,7 +122,7 @@ export function Home() {
                 handleRemove(item.id);
               }}
               onStatus={() => {
-                console.log("mudar o status");
+                handleToggleStatus(item.id);
               }}
             />
           )}
